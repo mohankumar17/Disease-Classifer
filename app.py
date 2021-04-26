@@ -23,11 +23,9 @@ STATIC_FOLDER = 'static'
 
 rice_leaf_model = load_model("models/rice-leaf-model.h5")
 maize_leaf_model = load_model("models/maize-leaf-model.h5")
-brain_tumor_model = load_model("models/brain-tumor-model.h5")
 diabetic_retino_model = load_model("models/diabetic-retino-model.h5")
 malaria_cell_model = load_model("models/malaria-cell-model.h5")
 lung_cancer_model = load_model("models/lung-cancer-model.h5")
-blood_cell_model = load_model("models/blood-cell-model.h5")
 
 ##########################################################################################
 
@@ -63,25 +61,6 @@ def maize_leaf_model_predict(img_path, model):
         preds="Gray Leaf Spot"
     elif preds==3:
         preds="Healthy"
-
-    return preds
-
-#-------------------------------------------------------------------------------------#
-def brain_tumor_model_predict(img_path, model):
-    img = image.load_img(img_path, target_size=(224, 224))
-    x = image.img_to_array(img)
-    x = x/255
-    x = np.expand_dims(x, axis=0)
-    preds = model.predict(x)
-    preds = np.argmax(preds, axis=1)
-    if preds==0:
-        preds="Glioma Tumor"
-    elif preds==1:
-        preds="Meningioma Tumor"
-    elif preds==2:
-        preds="No Tumor"
-    elif preds==3:
-        preds="Pituitary Tumor"
 
     return preds
 
@@ -134,34 +113,11 @@ def lung_cancer_model_predict(img_path, model):
 
     return preds
 
-#-------------------------------------------------------------------------------------#
-def blood_cell_model_predict(img_path, model):
-    img = image.load_img(img_path, target_size=(224, 224))
-    x = image.img_to_array(img)
-    x = x/255
-    x = np.expand_dims(x, axis=0)
-    preds = model.predict(x)
-    preds = np.argmax(preds, axis=1)
-    if preds==0:
-        preds='EOSINOPHIL'
-    elif preds==1:
-        preds='LYMPHOCYTE'
-    elif preds==2:
-        preds='MONOCYTE'
-    elif preds==3:
-        preds='NEUTROPHIL'
-
-    return preds
-
 ###########################################################################################
 
 @app.route("/",methods=["GET"])
 def home():
     return render_template("home.html")
-
-@app.route("/about")
-def about():
-    return render_template("about.html")
 
 @app.route("/riceleaf")
 def riceleaf():
@@ -170,10 +126,6 @@ def riceleaf():
 @app.route("/maizeleaf")
 def maizeleaf():
     return render_template("maizeleaf.html")
-
-@app.route("/braintumor")
-def braintumor():
-    return render_template("braintumor.html")
 
 @app.route("/diabetic_retino")
 def diabetic_retino():
@@ -186,10 +138,6 @@ def malariacell():
 @app.route("/lungcancer")
 def lungcancer():
     return render_template("lungcancer.html")
-
-@app.route("/bloodcell")
-def bloodcell():
-    return render_template("bloodcell.html")
 
 ###########################################################################################
 
@@ -232,28 +180,6 @@ def upload_maize():
         result = preds
         return result
     return None
-
-
-#----------------------------------------------------------------------------------#
-@app.route('/predict_brain', methods=['GET','POST'])
-
-def upload_brain():
-    if request.method == 'POST':
-        # Get the file from post request
-        f = request.files['file']
-
-        # Save the file to ./uploads
-        basepath = os.path.dirname(__file__)
-        file_path = os.path.join(
-            basepath, 'uploads', secure_filename(f.filename))
-        f.save(file_path)
-
-        # Make prediction
-        preds = brain_tumor_model_predict(file_path, brain_tumor_model)
-        result = preds
-        return result
-    return None
-
 
 #----------------------------------------------------------------------------------#
 @app.route('/predict_diabetic_retino', methods=['GET','POST'])
@@ -316,26 +242,6 @@ def upload_lung():
     return None
 
 #----------------------------------------------------------------------------------#
-@app.route('/predict_bloodcell', methods=['GET','POST'])
-
-def upload_blood():
-    if request.method == 'POST':
-        # Get the file from post request
-        f = request.files['file']
-
-        # Save the file to ./uploads
-        basepath = os.path.dirname(__file__)
-        file_path = os.path.join(
-            basepath, 'uploads', secure_filename(f.filename))
-        f.save(file_path)
-
-        # Make prediction
-        preds = blood_cell_model_predict(file_path, blood_cell_model)
-        result = preds
-        return result
-    return None
-
-###########################################################################################
-
 if __name__ == "__main__":
     app.run(debug=True)
+    #app.run(host="0.0.0.0",port=8080)

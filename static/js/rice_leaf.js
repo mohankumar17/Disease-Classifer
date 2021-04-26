@@ -3,7 +3,6 @@ $(document).ready(function () {
     $('.image-section').hide();
     $('.loader').hide();
     $('#result').hide();
-
     // Upload Preview
     function readURL(input) {
         if (input.files && input.files[0]) {
@@ -23,7 +22,6 @@ $(document).ready(function () {
         $('#result').hide();
         readURL(this);
     });
-
     // Predict
     $('#btn-predict').click(function () {
         var form_data = new FormData($('#upload-file')[0]);
@@ -50,5 +48,6 @@ $(document).ready(function () {
             },
         });
     });
-
 });
+
+
